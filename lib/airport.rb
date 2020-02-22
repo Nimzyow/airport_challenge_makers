@@ -11,10 +11,14 @@ class Airport
   end
 
   def land_plane(plane)
+    check_landing_conditions(plane)
+    store_plane(plane)
+  end
+
+  def check_landing_conditions(plane)
+    raise "please enter a plane" if !plane.is_a?(Hash)
     raise "Stormy, you can't land...go to a non stormy country" if is_stormy?
     raise "cannot land plane, hanger full" if is_full?
-    store_plane(plane)
-    
   end
 
   def store_plane(plane)

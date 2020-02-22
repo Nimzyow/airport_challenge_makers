@@ -124,5 +124,8 @@ describe Airport do
       stormy
       expect{airport.land_plane(flight_details)}.to raise_error("Stormy, you can't land...go to a non stormy country")
     end
+    it "#land_plane throws error if a hash is not passed as argument" do
+      expect{airport.land_plane("hi")}.to raise_error("please enter a plane")
+    end
   end
 end
