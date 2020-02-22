@@ -36,15 +36,15 @@ class Airport
     exceptions
   end
 
-  def is_stormy?
-    rand(4) == 1
-  end
-
   def is_full?
     @hanger.length >= capacity ? true : false;
   end
 
   private
+  def is_stormy?
+    rand(4) == 1
+  end
+
   def exceptions
     raise "plane does not exist in the hanger to take off" if @hanger.length > 0
     raise "no planes to take off"

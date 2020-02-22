@@ -3,7 +3,7 @@ require "airport"
 shared_context "common airport" do
     let(:airport) {described_class.new({name: "Gatwick", capacity: 5})}
     let(:default_capacity) {4}
-    let(:plane_klass) {instance_double(Plane, {flight_details: {airline: "Qatar Airways", flight_number: "QA101", next_takeoff_destination:"Tokyo"}})}
+    let(:plane_klass) {double("plane", {flight_details: {airline: "Qatar Airways", flight_number: "QA101", next_takeoff_destination:"Tokyo"}})}
     let(:flight_details) {plane_klass.flight_details}
     let(:no_storm) { allow(airport).to receive(:is_stormy?).and_return(false)}
     let(:stormy) {allow(airport).to receive(:is_stormy?).and_return(true)}
@@ -30,9 +30,6 @@ describe Airport do
     it "#take_off_plane" do
       expect(airport).to respond_to(:take_off_plane).with(1).arguments, "create take_off_plane method"
     end
-    it "#is_stormy?" do
-      expect(airport).to respond_to(:is_stormy?)
-    end
     it "#store_plane" do
       expect(airport).to respond_to(:store_plane).with(1).arguments
     end
@@ -52,10 +49,6 @@ describe Airport do
         no_storm
         airport.land_plane(flight_details)
         expect(airport.hanger).to include(flight_details)
-      end
-
-      it "#is_stormy should return true or false" do
-        expect(airport.is_stormy?).to eq(true).or eq(false)
       end
     end
     context "#take_off_plane" do
