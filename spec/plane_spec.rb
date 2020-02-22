@@ -1,11 +1,11 @@
 require "plane"
 
-shared_context "common" do
+shared_context "common plane" do
   let(:plane) { Plane.new({airline: "Qatar Airways", flight_number: "QA101", next_takeoff_destination: "Tokyo"}) }
 end
 
 describe Plane do
-  include_context "common"
+  include_context "common plane"
 
   context "has attributes" do
     it "airline, flight_number and next_takeoff_destination" do

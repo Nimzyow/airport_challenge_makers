@@ -1,6 +1,6 @@
 require "airport"
 
-shared_context "common" do
+shared_context "common airport" do
     let(:airport) {described_class.new({name: "Gatwick", capacity: 5})}
     let(:default_capacity) {4}
     let(:plane_klass) {instance_double(Plane, {flight_details: {airline: "Qatar Airways", flight_number: "QA101", next_takeoff_destination:"Tokyo"}})}
@@ -8,7 +8,7 @@ shared_context "common" do
 end
 
 describe Airport do
-  include_context "common"
+  include_context "common airport"
 
   describe "has attributes" do
     it "hanger containig an empty array, name of airport and capacity of 5" do
@@ -20,7 +20,6 @@ describe Airport do
       expect(airport_no_capacity_specified.capacity).to eq(default_capacity) 
     end
   end
-
 
   describe "responds to method" do
     it "#land_plane" do
@@ -40,31 +39,53 @@ describe Airport do
     end
   end
 
-  context "method functionality - " do
-    it "store_plane should push plane into hanger array"do
-      expect{airport.store_plane(flight_details)}.to change{airport.hanger.length}.by(1) 
-    end
+  describe "method functionality - " do
+    context "hanger state change" do
+      it "store_plane should push plane into hanger array" do
+        expect{airport.store_plane(flight_details)}.to change{airport.hanger.length}.by(1) 
+      end
 
-    it "hanger array includes 1 flight detail" do
-      airport.land_plane(flight_details)
-      expect(airport.hanger).to include(flight_details)
+      it "hanger array includes 1 flight detail" do
+        airport.land_plane(flight_details)
+        expect(airport.hanger).to include(flight_details)
+      end
     end
-
-    it "take_off_plane should remove plane from hanger array" do
+    context "#take_off_plane" do
+    it "#take_off_plane should remove plane from hanger array" do
+      flight_number_to_take_off = "TH101"
       airport.land_plane(flight_details)
-      expect{airport.take_off_plane(flight_details)}.to change{airport.hanger.length}.by(-1)
+      expect{airport.take_off_plane("QA101")}.to change{airport.hanger.length}.by(-1)
     end
 
     it "take_off_plane will no longer have the plane in hanger" do
       airport.land_plane(flight_details)
-      airport.take_off_plane(flight_details)
+      airport.take_off_plane("QA101")
       expect(airport.hanger).to_not include(flight_details)
     end
 
+    it "land 3 planes and only allow the 2nd plane to take off" do
+      def generate_flight(airline:, flight_number:, next_takeoff_destination:)
+        plane = plane_klass
+        allow(plane).to receive(:flight_details).and_return({airline: airline, flight_number: flight_number, next_takeoff_destination: next_takeoff_destination})
+        return plane
+      end
+      
+      plane_one = flight_details
+      airport.land_plane(plane_one)
+
+      plane_two = generate_flight({airline: "Thai Airways", flight_number: "TH101", next_takeoff_destination:"Bangkok"})
+      airport.land_plane(plane_two.flight_details)
+
+      plane_three = generate_flight({airline: "Etihad Airways", flight_number: "ET101", next_takeoff_destination:"Dubai"})
+      airport.land_plane(plane_three.flight_details)
+      
+      airport.take_off_plane("TH101")
+      expect(airport.hanger).not_to include({airline: "Thai Airways", flight_number: "TH101", next_takeoff_destination:"Bangkok"})
+    end
+  end
     it "prevent land_plane if airport capacity is full" do
-      plane = "Qatar Airways"
       allow(airport).to receive(:is_full?).and_return(true)
-      expect{airport.land_plane(plane)}.to raise_error("cannot land plane, hanger full")
+      expect{airport.land_plane(flight_details)}.to raise_error("cannot land plane, hanger full")
     end
 
     it "is_stormy should return true or false" do

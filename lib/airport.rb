@@ -18,8 +18,14 @@ class Airport
     @hanger.push(plane)
   end
 
-  def take_off_plane(plane)
-    @hanger.delete(plane)
+  def take_off_plane(flight_number)
+    @hanger.map.with_index {
+      |plane, i|
+      if plane[:flight_number] == flight_number
+        return @hanger.delete_at(i) 
+      end
+    }
+    raise "no planes to take off"
   end
 
   def is_stormy?
