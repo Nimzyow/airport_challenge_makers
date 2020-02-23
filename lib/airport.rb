@@ -1,8 +1,7 @@
 class Airport
   DEFAULT_CAPACITY = 4
 
-  attr_accessor :hanger, :capacity
-  attr_reader :name
+  attr_reader :name, :hanger, :capacity
   
   def initialize(name:, capacity: DEFAULT_CAPACITY)
     @hanger = []
@@ -41,10 +40,6 @@ class Airport
   end
 
   private
-  def is_stormy?
-    rand(4) == 1
-  end
-
   def exceptions
     raise "plane does not exist in the hanger to take off" if @hanger.length > 0
     raise "no planes to take off"
@@ -53,4 +48,9 @@ class Airport
   def takeoff_message(plane)
     puts "Welcome on board to #{plane[:airline]}. We are about to take off to #{plane[:next_takeoff_destination]}. We hope you have a pleasant journey and thank you for choosing #{plane[:airline]}"
   end
+
+  def is_stormy?
+    rand(4) == 1
+  end
+  
 end

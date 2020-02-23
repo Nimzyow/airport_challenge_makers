@@ -13,7 +13,7 @@ describe Airport do
   include_context "common airport"
 
   describe "has attributes" do
-    it "hanger containig an empty array, name of airport and capacity of 5" do
+    it "hanger containing an empty array, name of airport and capacity of 5 " do
       expect(airport).to have_attributes(hanger: [], name: "Gatwick", capacity: 5)
     end
 
