@@ -28,12 +28,8 @@ class Airport
     
     @hanger.map.with_index { |plane, i|
       flight_details = plane.flight_details
-      puts "here are the flight numbers"
-      puts flight_details[:flight_number]
-      puts "this is whats in @hanger"
       p @hanger
       if flight_details[:flight_number] == flight_number
-        puts "we get to here"
         takeoff_message(flight_details)
         return @hanger.delete_at(i) 
       end
